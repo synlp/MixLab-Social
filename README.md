@@ -10,6 +10,8 @@ Run `python3 -m http.server 8767` in this directory and open `http://localhost:8
 
 `data/publications.json` is the editable catalogue. It contains paper and repository links, concise summaries, release notes and verified citation metadata where available. `scripts/build.py` renders the static homepage and citation files. Run `python3 scripts/build.py` after updating the catalogue. No dependencies or JavaScript build step are needed.
 
+`assets/typography.css` sets the desktop reading scale, including 19 px paper titles, 15 px summaries and 13 px authors and resource links.
+
 `assets/mobile.css` adapts the layout below 760 px with larger reading text, 44 px action targets, a full-width navigation menu and native research-area and year selectors. Topic selection stays synchronized with the desktop filter buttons. The build versions mobile styles and scripts by content hash so cached pages can load updates reliably.
 
 The work is organized into five visible research areas, with dedicated overviews and subgroups for text sentiment, multimodal sentiment, entities, relations, data, safety and supporting tools. Search and year filters operate across these area blocks.

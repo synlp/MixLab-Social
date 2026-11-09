@@ -1,0 +1,81 @@
+/* Reading scale for desktop and tablet layouts. */
+@media(min-width:761px){
+  body{font-size:16px}
+  .nav-links{font-size:14px}
+  .nav-cta{font-size:13px}
+  .eyebrow{font-size:11px;line-height:1.65;letter-spacing:1.5px}
+  .hero-description{font-size:17px;line-height:1.8;max-width:540px}
+  .hero-actions .button,.hero-actions .text-link{font-size:14px}
+  .hero-bottom{font-size:12px;line-height:1.7}
+  .hero-art figcaption{font-size:10px;line-height:1.6;gap:18px}
+  .hero-index a{font-size:14px}
+  .hero-index span{font-size:14px;line-height:1.55;max-width:none}
+  .hero-index small{font-size:11px}
+  .overview-copy>p:not(.eyebrow){font-size:16px;line-height:1.8}
+  .stat span{font-size:13px;line-height:1.7;max-width:180px}
+  .program-number{font-size:12px}
+  .program h3{font-size:22px;line-height:1.35}
+  .program p{font-size:15px;line-height:1.8}
+  .section-heading>p{font-size:15px;line-height:1.8;max-width:410px}
+  .catalog-status-note{font-size:13px;line-height:1.8;max-width:710px}
+  .search-field{min-height:48px}
+  .search-field input{font-size:16px;line-height:1.5}
+  .select-label{font-size:13px}
+  .select-label select{font-size:15px;min-height:48px}
+  .filters button{font-size:13px;line-height:1.5;min-height:40px;padding:9px 13px}
+  .result-count{font-size:13px}
+  .area-heading h3{font-size:36px;line-height:1.2}
+  .area-heading .eyebrow{font-size:11px}
+  .group-count{font-size:13px}
+  .area-summary{font-size:16px;line-height:1.8;max-width:720px}
+  .subgroup-heading{font-size:12px;letter-spacing:1px;line-height:1.8;padding:14px 0}
+  .paper{grid-template-columns:62px minmax(0,1fr) 168px;gap:26px;padding:30px 0}
+  .paper>div{min-width:0}
+  .paper-year{font-size:14px}
+  .paper-meta{font-size:12px;line-height:1.65;gap:8px 12px;letter-spacing:.2px;margin-bottom:10px}
+  .publication-status{font-size:10px;padding:3px 7px}
+  .paper h4{font-size:19px;line-height:1.5;letter-spacing:-.2px;margin-bottom:12px;overflow-wrap:anywhere}
+  .paper-description{font-size:15px;line-height:1.8;max-width:920px;margin-bottom:11px}
+  .paper-authors{font-size:13px;line-height:1.8;color:#68758c}
+  .release-note{font-size:13px;line-height:1.8;max-width:920px}
+  .paper-actions{font-size:13px;gap:10px 12px;padding-top:0}
+  .paper-actions a,.paper-actions .cite-button{display:inline-flex;align-items:center;justify-content:center;min-height:34px;font-size:13px;line-height:1.5;padding:6px 0}
+  .catalog-foot{font-size:13px;line-height:1.8}
+  .catalog-foot a{display:inline-flex;align-items:center;min-height:34px}
+  .cite-status{font-size:13px}
+  .journey-top>p{font-size:15px;line-height:1.8;max-width:410px}
+  .milestone time{font-size:12px;line-height:1.6}
+  .milestone h3{font-size:21px;line-height:1.4}
+  .milestone p{font-size:14px;line-height:1.8}
+  .open-panel p{font-size:15px;line-height:1.8}
+  .open-panel .button{font-size:14px}
+  .repo-row strong{font-size:17px;line-height:1.5}
+  .repo-row span{font-size:13px;line-height:1.7}
+  .footer-description{font-size:14px;line-height:1.8;max-width:390px}
+  .footer h3{font-size:12px}
+  .footer-links{font-size:13px;gap:3px}
+  .footer-links a{display:flex;align-items:center;min-height:32px;line-height:1.6}
+  .footer-bottom{font-size:12px;line-height:1.7}
+  .footer-bottom .top-link{min-height:32px}
+}
+@media(min-width:761px) and (max-width:1100px){
+  .nav-links{font-size:13px}
+  .nav-cta{font-size:12px}
+  .hero-description{font-size:16px}
+  .hero-actions{gap:18px}
+  .hero-actions .button,.hero-actions .text-link{font-size:13px}
+  .hero-index span{font-size:13px}
+  .area-heading{grid-template-columns:minmax(0,1fr) 230px;gap:32px}
+  .area-heading h3{font-size:31px}
+  .paper{grid-template-columns:45px minmax(0,1fr) 132px;gap:20px}
+}
+@media(min-width:761px) and (max-width:900px){
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:30px}
+  .hero h1{font-size:65px;letter-spacing:-3px}
+  .hero-description{max-width:620px}
+  .hero-art{width:100%;max-width:560px;margin-inline:auto}
+  .programs{grid-template-columns:minmax(0,1fr);gap:0}
+  .program{padding:22px 0}
+  .area-heading{grid-template-columns:minmax(0,1fr) 200px;gap:25px;padding:28px}
+  .area-summary{font-size:15px}
+}
