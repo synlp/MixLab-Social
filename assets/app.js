@@ -7,6 +7,8 @@ const papers=[...document.querySelectorAll('.paper')]; let category='all';
 function update(){
  const terms=search.value.toLowerCase().trim().split(/\s+/).filter(Boolean); let n=0;
  for(const paper of papers){const show=(category==='all'||paper.dataset.category===category)&&(year.value==='all'||paper.dataset.year===year.value)&&terms.every(t=>paper.dataset.search.toLowerCase().includes(t));paper.hidden=!show;if(show)n++;}
+ document.querySelectorAll('.research-subgroup').forEach(g=>g.hidden=![...g.querySelectorAll('.paper')].some(p=>!p.hidden));
+ document.querySelectorAll('.research-block').forEach(g=>{const all=[...g.querySelectorAll('.paper')],visible=all.filter(p=>!p.hidden).length;g.hidden=visible===0;g.querySelector('.group-count').textContent=visible===all.length?visible+(visible===1?' work':' works'):visible+' of '+all.length+' works';});
  document.querySelector('#count').textContent=n+' of '+papers.length+' works';document.querySelector('#empty').hidden=n!==0;
 }
 buttons.forEach(b=>b.addEventListener('click',()=>{category=b.dataset.category;buttons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));update();}));
@@ -14,6 +16,7 @@ search.addEventListener('input',update);year.addEventListener('change',update);
 document.querySelector('#reset').addEventListener('click',()=>{search.value='';year.value='all';category='all';buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category==='all')));update();search.focus();});
 document.querySelectorAll('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.mobile-menu').removeAttribute('open')));
 document.querySelectorAll('.cite-button').forEach(b=>b.addEventListener('click',async()=>{const text=window.MIX_CITATIONS[b.dataset.cite];try{await navigator.clipboard.writeText(text);document.querySelector('#cite-status').textContent='Citation copied for '+b.dataset.cite+'.';b.textContent='Copied ✓';setTimeout(()=>b.textContent='Cite',2000);}catch{document.querySelector('#citation-text').value=text;document.querySelector('#citation-dialog').showModal();document.querySelector('#citation-text').select();}}));
-function showAnchor(){const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(target?.classList.contains('paper')&&target.hidden){document.querySelector('#reset').click();target.scrollIntoView();}}
+function showAnchor(){const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if((target?.classList.contains('paper')||target?.classList.contains('research-block'))&&target.hidden){document.querySelector('#reset').click();target.scrollIntoView();}}
 window.addEventListener('hashchange',showAnchor);update();showAnchor();
+document.querySelectorAll('a[href^="#group-"]').forEach(a=>a.addEventListener('click',()=>{const target=document.querySelector(a.getAttribute('href'));if(target?.hidden){document.querySelector('#reset').click();target.scrollIntoView();}}));
 })();

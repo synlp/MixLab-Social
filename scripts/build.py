@@ -1,16 +1,22 @@
 """Render a buildless GitHub Pages showcase with the MixLab-Med design system."""
 import html
 import json
+import re
 from pathlib import Path
+from taxonomy import AREAS, classify
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=json.loads((ROOT/'data/publications.json').read_text())
+for item in DATA:
+    item['category'], item['subtopic'] = classify(item)
+(ROOT/'data/publications.json').write_text(json.dumps(DATA,ensure_ascii=False,indent=2)+'\n')
 E=html.escape
-CATS={'extraction':'Information extraction','sentiment':'Sentiment analysis','multimodal':'Multimodal understanding','safety':'Content safety','resources':'Social data & tools','foundations':'Language foundations'}
+CATS={k:v[0] for k,v in AREAS.items()}
 def link(url,label,cls=''):
     return f'<a class="{cls}" href="{E(url)}" target="_blank" rel="noopener noreferrer">{label} ↗</a>'
 def card_visual(kind):
     art={
+    'foundations':'<text x="29" y="38" fill="#97a6c5" font-size="10" letter-spacing="2">LANGUAGE FOUNDATIONS &amp; TASK TOOLS</text><rect x="29" y="67" width="130" height="35" rx="6" stroke="#91a8d5"/><text x="44" y="89" fill="#bfd0ff" font-size="11">TEXT PROCESSING</text><path d="M159 84h34v52h-34" stroke="#9fb6e4"/><rect x="29" y="119" width="130" height="35" rx="6" stroke="#91a8d5"/><text x="44" y="141" fill="#bfd0ff" font-size="11">TOKENS &amp; TAGS</text><path d="M193 110h25" stroke="#9fb6e4"/><rect x="219" y="84" width="106" height="51" rx="6" fill="#bfd0ff"/><text x="234" y="106" fill="#11203e" font-size="10">TASK MODEL</text><text x="234" y="121" fill="#11203e" font-size="10">INTERFACE</text>',
     'extraction':'<text x="29" y="50" fill="#97a6c5" font-size="10" letter-spacing="2">SOCIAL TEXT → STRUCTURED KNOWLEDGE</text><rect x="29" y="76" width="99" height="34" rx="5" fill="#bfd0ff"/><text x="43" y="98" fill="#11203e" font-size="13">Entity A</text><path d="M128 93h98" stroke="#9fb6e4"/><text x="145" y="81" fill="#a2b5db" font-size="9">RELATION</text><rect x="226" y="76" width="99" height="34" rx="5" stroke="#91a8d5" fill="none"/><text x="241" y="98" fill="#bfd0ff" font-size="13">Entity B</text><path d="M29 144h202m-202 14h274" stroke="#7b8baa" stroke-opacity=".4"/>',
     'sentiment':'<text x="29" y="43" fill="#97a6c5" font-size="10" letter-spacing="2">ONE MESSAGE. DIFFERENT OPINIONS.</text><text x="29" y="83" fill="#d8e0f0" font-size="17">“Great camera, short battery life.”</text><rect x="29" y="111" width="136" height="37" rx="6" fill="#bfd0ff"/><text x="42" y="135" fill="#11203e" font-size="11">CAMERA  /  POSITIVE</text><rect x="179" y="111" width="146" height="37" rx="6" fill="none" stroke="#98a8c7"/><text x="191" y="135" fill="#ced7ea" font-size="11">BATTERY  /  NEGATIVE</text>',
     'multimodal':'<text x="29" y="38" fill="#97a6c5" font-size="10" letter-spacing="2">TASK KNOWLEDGE × LANGUAGE MODELS</text><rect x="29" y="63" width="83" height="65" rx="7" stroke="#849dcf" fill="#1d3055"/><path d="M42 112l18-21 15 12 13-19 13 28z" fill="#86a5e4"/><rect x="29" y="140" width="83" height="23" rx="4" stroke="#7086b1"/><path d="M42 150h57m-57 5h37" stroke="#869bc6"/><path d="M112 96h45v32h43m-88 24h45v-24" stroke="#8eadea"/><rect x="201" y="82" width="120" height="76" rx="8" fill="#bfd0ff"/><text x="220" y="112" fill="#1c2c4b" font-size="11">MEMORY HUB</text><text x="220" y="134" fill="#1c2c4b" font-size="11">+ MULTIMODAL LLM</text>',
@@ -18,18 +24,9 @@ def card_visual(kind):
     'resources':'<text x="29" y="34" fill="#97a6c5" font-size="10" letter-spacing="2">EVENTS × TEXT × INTERACTIONS</text><g stroke="#62769f" stroke-opacity=".6"><path d="M29 70h294M29 105h294M29 140h294"/></g><path d="M29 127l31-7 26 12 29-35 32 9 27-46 28 18 27-5 30 36 32-11 32 18" fill="none" stroke="#bfd0ff" stroke-width="2"/><g fill="#98b4eb"><circle cx="115" cy="97" r="4"/><circle cx="174" cy="60" r="4"/><circle cx="229" cy="73" r="4"/></g><text x="29" y="174" fill="#8e9fc2" font-size="9">CONCEPTUAL EVENT VIEW</text>',
     'prototypes':'<text x="29" y="36" fill="#97a6c5" font-size="10" letter-spacing="2">SHARED SENTIMENT PROTOTYPES</text><g stroke="#6c85b6" stroke-dasharray="3 5"><path d="M62 103h221M107 67l139 72M107 139l139-72"/></g><g fill="#647ba8"><circle cx="62" cy="103" r="12"/><circle cx="107" cy="67" r="9"/><circle cx="107" cy="139" r="9"/><circle cx="246" cy="67" r="9"/><circle cx="246" cy="139" r="9"/><circle cx="283" cy="103" r="12"/></g><circle cx="176" cy="103" r="30" fill="#bfd0ff"/><text x="162" y="110" fill="#152340" font-size="22">＋</text><text x="58" y="173" fill="#9fb1d4" font-size="9" letter-spacing="2">LANGUAGE · VISION · AUDIO</text>'
     }
-    return '<svg viewBox="0 0 354 194" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="354" height="194" fill="#142b4d"/><g font-family="Arial,sans-serif">'+art[kind]+'</g></svg>'
+    return '<svg viewBox="0 0 354 194" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="354" height="194" fill="#142b4d"/><g font-family="Arial,sans-serif">'+art[kind]+'</g></svg>'
 
-featured=[('SANER','extraction'),('DGSA','sentiment'),('MABSA-LLMPlug','multimodal'),('MemRCRHMD','safety'),('SURGE','resources'),('PRISM','prototypes')]
-cards=[]
-for id,visual in featured:
-    x=next(x for x in DATA if x['id']==id)
-    label=x['venue']+(f" {x['year']}" if x['year'] else '')
-    actions=link(x['github'],'GitHub')
-    if x['paper']:actions=link(x['paper'],'Paper')+actions
-    if x.get('website'):actions=link(x['website'],'Dataset')+actions
-    cards.append(f'<article class="project"><div class="project-visual">{card_visual(visual)}</div><div class="project-content"><div class="project-meta"><span>{E(CATS[x["category"]])}</span><span>{E(label)}</span></div><h3>{E(id)}</h3><p class="project-description">{E(x["description"])}</p><div class="project-links">{actions}<a href="#work-{id}" aria-label="View {id} in the catalogue">Details ↓</a></div></div></article>')
-papers=[]
+papers={}
 for x in DATA:
     year=str(x['year']) if x['year'] else 'Project'
     actions=link(x['github'],'GitHub')
@@ -38,7 +35,17 @@ for x in DATA:
     if x.get('bibtex'):actions+=f'<button class="cite-button" data-cite="{E(x["id"])}" aria-label="Copy citation for {E(x["id"])}">Cite</button>'
     note=f'<p class="release-note">{E(x["note"])}</p>' if x['note'] else ''
     titleurl=x['paper'] or x['github']
-    papers.append(f'<article class="paper" id="work-{E(x["id"])}" data-year="{year}" data-category="{x["category"]}" data-search="{E(x["id"]+" "+x["title"]+" "+x["description"]+" "+x.get("authors", "")+" "+x["venue"]+" "+CATS[x["category"]])}"><div class="paper-year">{year}</div><div><p class="paper-meta"><span>{year}</span><span>{E(x["venue"])}</span><span>{E(CATS[x["category"]])}</span><span class="publication-status">{E(x["status"])}</span></p><h3>{link(titleurl,E(x["title"]))}</h3><p class="paper-description">{E(x["description"])}</p><p class="paper-authors">{E(x.get("authors", ""))}</p>{note}</div><div class="paper-actions">{actions}</div></article>')
+    papers[x['id']]=f'<article class="paper" id="work-{E(x["id"])}" data-year="{year}" data-category="{x["category"]}" data-search="{E(x["id"]+" "+x["title"]+" "+x["description"]+" "+x.get("authors", "")+" "+x["venue"]+" "+CATS[x["category"]]+" "+x["subtopic"])}"><div class="paper-year">{year}</div><div><p class="paper-meta"><span>{year}</span><span>{E(x["venue"])}</span><span class="publication-status">{E(x["status"])}</span></p><h4>{link(titleurl,E(x["title"]))}</h4><p class="paper-description">{E(x["description"])}</p><p class="paper-authors">{E(x.get("authors", ""))}</p>{note}</div><div class="paper-actions">{actions}</div></article>'
+
+groups=[]
+for number,(key,(label,summary,visual)) in enumerate(AREAS.items(),1):
+    rows=[x for x in DATA if x['category']==key]
+    subgroups=[]
+    topics=sorted({x['subtopic'] for x in rows},key=lambda s: (s.startswith('Multimodal'),s))
+    for topic in topics:
+        entries=''.join(papers[x['id']] for x in rows if x['subtopic']==topic)
+        subgroups.append(f'<div class="research-subgroup"><h4 class="subgroup-heading">{E(topic)}</h4>{entries}</div>')
+    groups.append(f'<section class="research-block" id="group-{key}" data-group="{key}" aria-labelledby="heading-{key}"><div class="area-heading"><div><p class="eyebrow">RESEARCH AREA {number:02d}<span class="group-count">{len(rows)} {'work' if len(rows)==1 else 'works'}</span></p><h3 id="heading-{key}">{E(label)}</h3><p class="area-summary">{E(summary)}</p></div><div class="area-visual">{card_visual(visual)}</div></div>{"".join(subgroups)}</section>')
 
 brand='<img class="brand-mark" src="assets/favicon.svg" width="35" height="35" alt=""><span class="brand-name">MIX Lab<span>Social</span></span>'
 filters=''.join(f'<button type="button" data-category="{k}" aria-pressed="false">{v}</button>' for k,v in CATS.items())
@@ -58,7 +65,20 @@ template='''<!doctype html>
 <section class="wrap open-section" id="open-source"><div class="open-panel"><div><p class="eyebrow">OPEN RESEARCH</p><h2>Read the papers.<br>Explore the projects.</h2><p>Discover research implementations, data resources and project documentation through Yan Song’s NLP Group on GitHub.</p><a class="button" href="https://github.com/synlp" target="_blank" rel="noopener noreferrer">Visit our GitHub <span>↗</span></a></div><div class="repo-directory"><a class="repo-row" href="https://github.com/synlp/SANER" target="_blank" rel="noopener noreferrer"><div><strong>Information extraction</strong><span>Social text, entities and relations</span></div><b>↗</b></a><a class="repo-row" href="https://github.com/synlp/MABSA-LLMPlug" target="_blank" rel="noopener noreferrer"><div><strong>Sentiment &amp; multimodal learning</strong><span>Task models, plugins and memory</span></div><b>↗</b></a><a class="repo-row" href="https://synlp.github.io/SURGE/" target="_blank" rel="noopener noreferrer"><div><strong>SURGE</strong><span>Event-centric social media resources</span></div><b>↗</b></a></div></div></section></main>
 <footer class="footer"><div class="wrap"><div class="footer-top"><div class="footer-brand"><a class="brand" href="#main">{{BRAND}}</a><p class="footer-description">Information extraction, sentiment analysis and multimodal social media understanding.<br>Research by Yan Song and collaborators.</p></div><div><h3>EXPLORE</h3><div class="footer-links"><a href="#research">Research directions</a><a href="#projects">Featured projects</a><a href="#publications">Publications &amp; resources</a><a href="https://synlp.github.io/MixLab-Med/">Medical research ↗</a></div></div><div><h3>RESEARCH LINKS</h3><div class="footer-links"><a href="https://github.com/synlp" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://scholar.google.com/citations?user=MsRp7g0AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Scholar ↗</a><a href="https://aclanthology.org/people/yan-song/" target="_blank" rel="noopener noreferrer">ACL Anthology ↗</a></div></div></div><div class="footer-bottom"><p>© 2026 MIX Lab. Original papers and repositories retain their respective rights.</p><a class="top-link" href="#main">Back to top ↑</a></div></div></footer>
 <dialog id="citation-dialog"><form method="dialog"><button class="reset-button" aria-label="Close citation">Close ×</button></form><h2>Paper citation</h2><textarea id="citation-text" readonly aria-label="BibTeX citation"></textarea><p>Select and copy the citation above.</p></dialog></body></html>'''
-for a,b in {'BRAND':brand,'COUNT':str(len(DATA)),'CARDS':''.join(cards),'PAPERS':''.join(papers),'YEARS':years,'FILTERS':filters}.items():template=template.replace('{{'+a+'}}',b)
+# Present all works as substantive area blocks near the top of the page.
+catalog=re.search(r'<section class="section wrap catalog" id="publications">.*?</section>',template,re.S).group(0)
+template=template.replace(catalog,'')
+catalog=catalog.replace('04 / PUBLICATIONS &amp; RESOURCES','02 / WORK BY RESEARCH AREA').replace('A closer look<br><span class="muted">at the work.</span>','Explore the work.<br><span class="muted">One area at a time.</span>')
+catalog=catalog.replace('Explore research papers and public projects by topic, year or keyword. Every entry links to its team repository.','Five research areas bring together the papers, datasets and tools. Browse each area or narrow the selection by topic, year or keyword.')
+catalog=catalog.replace('Publication details follow the original paper or project record. Open projects are listed separately from dated publications. Repository links may point to a release announcement.','Each research area has its own overview and collection of works. Dated papers and open projects retain their publication and release labels.')
+template=re.sub(r'<section class="feature-section" id="projects">.*?</section>',lambda _: '<div id="projects">'+catalog+'</div>',template,count=1,flags=re.S)
+area_nav=''.join(f'<a href="#group-{key}"><small>{i:02d}</small><span>{E(info[0])}</span><b>↗</b></a>' for i,(key,info) in enumerate(AREAS.items(),1))
+template=re.sub(r'<div class="wrap hero-index">.*?</div></section>',lambda _: '<div class="wrap hero-index">'+area_nav+'</div></section>',template,count=1,flags=re.S)
+programs=''.join(f'<article class="program"><span class="program-number">{i:02d}</span><div><h3><a href="#group-{key}">{E(info[0])} ↗</a></h3><p>{E(info[1])}</p></div></article>' for i,(key,info) in enumerate(AREAS.items(),1))
+overview='<section class="section wrap overview" id="research"><div class="overview-copy"><p class="eyebrow">01 / OUR RESEARCH</p><h2>Making sense of<br>what people share.</h2><p>Online communication combines informal text with images, video and evolving conversations. We study how to extract its facts, understand its opinions and organize the data needed to analyze it.</p><p>Our work is organized into five connected research areas, with language methods and tools supporting the study of social information.</p><div class="stats"><div class="stat"><strong>{{COUNT}}</strong><span>Research works &amp; projects</span></div><div class="stat"><strong>05</strong><span>Research areas</span></div></div></div><div class="programs">'+programs+'</div></section>'
+template=re.sub(r'<section class="section wrap overview" id="research">.*?</section>',lambda _: overview,template,count=1,flags=re.S)
+template=template.replace('Featured projects','Work by area').replace('featured projects','research areas')
+for a,b in {'BRAND':brand,'COUNT':str(len(DATA)),'PAPERS':''.join(groups),'YEARS':years,'FILTERS':filters}.items():template=template.replace('{{'+a+'}}',b)
 (ROOT/'index.html').write_text(template)
 (ROOT/'data/citations.bib').write_text('\n'.join(x.get('bibtex','') for x in DATA))
 (ROOT/'assets/citations.js').write_text('window.MIX_CITATIONS = '+json.dumps({x['id']:x['bibtex'] for x in DATA if x.get('bibtex')})+';\n')
@@ -73,6 +93,8 @@ const papers=[...document.querySelectorAll('.paper')]; let category='all';
 function update(){
  const terms=search.value.toLowerCase().trim().split(/\\s+/).filter(Boolean); let n=0;
  for(const paper of papers){const show=(category==='all'||paper.dataset.category===category)&&(year.value==='all'||paper.dataset.year===year.value)&&terms.every(t=>paper.dataset.search.toLowerCase().includes(t));paper.hidden=!show;if(show)n++;}
+ document.querySelectorAll('.research-subgroup').forEach(g=>g.hidden=![...g.querySelectorAll('.paper')].some(p=>!p.hidden));
+ document.querySelectorAll('.research-block').forEach(g=>{const all=[...g.querySelectorAll('.paper')],visible=all.filter(p=>!p.hidden).length;g.hidden=visible===0;g.querySelector('.group-count').textContent=visible===all.length?visible+(visible===1?' work':' works'):visible+' of '+all.length+' works';});
  document.querySelector('#count').textContent=n+' of '+papers.length+' works';document.querySelector('#empty').hidden=n!==0;
 }
 buttons.forEach(b=>b.addEventListener('click',()=>{category=b.dataset.category;buttons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));update();}));
@@ -80,8 +102,9 @@ search.addEventListener('input',update);year.addEventListener('change',update);
 document.querySelector('#reset').addEventListener('click',()=>{search.value='';year.value='all';category='all';buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category==='all')));update();search.focus();});
 document.querySelectorAll('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.mobile-menu').removeAttribute('open')));
 document.querySelectorAll('.cite-button').forEach(b=>b.addEventListener('click',async()=>{const text=window.MIX_CITATIONS[b.dataset.cite];try{await navigator.clipboard.writeText(text);document.querySelector('#cite-status').textContent='Citation copied for '+b.dataset.cite+'.';b.textContent='Copied ✓';setTimeout(()=>b.textContent='Cite',2000);}catch{document.querySelector('#citation-text').value=text;document.querySelector('#citation-dialog').showModal();document.querySelector('#citation-text').select();}}));
-function showAnchor(){const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(target?.classList.contains('paper')&&target.hidden){document.querySelector('#reset').click();target.scrollIntoView();}}
+function showAnchor(){const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if((target?.classList.contains('paper')||target?.classList.contains('research-block'))&&target.hidden){document.querySelector('#reset').click();target.scrollIntoView();}}
 window.addEventListener('hashchange',showAnchor);update();showAnchor();
+document.querySelectorAll('a[href^="#group-"]').forEach(a=>a.addEventListener('click',()=>{const target=document.querySelector(a.getAttribute('href'));if(target?.hidden){document.querySelector('#reset').click();target.scrollIntoView();}}));
 })();
 ''')
-print(f'Rendered {len(DATA)} catalogue entries and {len(cards)} featured projects')
+print(f'Rendered {len(DATA)} works in {len(groups)} research areas')
