@@ -14,7 +14,7 @@ The catalogue was reviewed against [Yan Song’s NLP Group](https://github.com/s
 
 Repository links describe the published release accurately. RE-CCG, RE-NGCN, ASA-CD and MemRCRHMD currently announce forthcoming code. TOSA-HMD explicitly provides the core method rather than all experiment scripts. Dataset access and licensing follow the linked project documentation.
 
-`assets/styles.css` and `assets/favicon.svg` are copied from the companion medical showcase for consistent branding, typography, spacing and components. `assets/social.css` contains limited social-page adjustments. The SVG research illustrations are conceptual; they are not experimental results or architectural reproductions.
+The page shares the companion medical showcase’s branding, typography, spacing and components, with an independent navy, white and blue palette. `assets/social.css` contains social-page adjustments. The SVG research illustrations are conceptual; they are not experimental results or architectural reproductions.
 
 ## GitHub Pages
 
