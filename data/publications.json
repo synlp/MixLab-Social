@@ -102,7 +102,9 @@
     "github": "https://github.com/synlp/MABSA-LLMPlug",
     "status": "Published",
     "note": "",
-    "source": "https://github.com/synlp/MABSA-LLMPlug"
+    "source": "https://github.com/synlp/MABSA-LLMPlug",
+    "authors": "Yuanhe Tian, Yan Song, Yongdong Zhang",
+    "bibtex": "@article{tian2025multimodal,\n  title={Multimodal aspect-based sentiment analysis with plugin-enhanced large language models},\n  author={Tian, Yuanhe and Song, Yan and Zhang, Yongdong},\n  journal={IEEE Transactions on Neural Networks and Learning Systems},\n  year={2025},\n  publisher={IEEE}\n}\n"
   },
   {
     "id": "MemRCRHMD",
